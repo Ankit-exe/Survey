@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { CreateSurveySchema } from "@/lib/validations";
 import { generateSlug } from "@/lib/utils";
@@ -50,8 +51,8 @@ export async function POST(request: Request) {
           type: q.type,
           label: q.label,
           required: q.required ?? false,
-          options: q.options ?? null,
-          conditions: q.conditions ?? null,
+          options: q.options ?? Prisma.JsonNull,
+          conditions: (q.conditions ?? Prisma.JsonNull) as Prisma.InputJsonValue,
         })),
       },
     },
