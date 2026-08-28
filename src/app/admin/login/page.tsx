@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { FileText, LogIn, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,32 +41,29 @@ export default function LoginPage() {
         alignItems: "center",
         justifyContent: "center",
         padding: 24,
-        background: "radial-gradient(ellipse at center, rgba(139,92,246,0.15) 0%, transparent 70%), var(--bg-primary)",
+        background: "radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.05) 0%, transparent 60%), var(--bg-main)",
       }}
     >
-      <div className="glass-card animate-fade-in-up" style={{ width: "100%", maxWidth: 420, padding: 40 }}>
-        {/* Logo */}
-        <div style={{ textAlign: "center", marginBottom: 32 }}>
+      <div className="human-card animate-fade-in" style={{ width: "100%", maxWidth: 400, padding: 36 }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
           <div
             style={{
-              width: 52,
-              height: 52,
-              background: "var(--gradient-primary)",
-              borderRadius: 14,
+              width: 44,
+              height: 44,
+              background: "var(--accent-primary)",
+              borderRadius: 10,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 14px",
-              boxShadow: "0 0 30px var(--accent-glow)",
+              margin: "0 auto 12px",
+              color: "#ffffff",
             }}
           >
-            <svg width="26" height="26" fill="none" viewBox="0 0 24 24">
-              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-              <rect x="9" y="3" width="6" height="4" rx="1" stroke="white" strokeWidth="2"/>
-            </svg>
+            <FileText size={22} />
           </div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, marginBottom: 4 }}>Admin Login</h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: 14 }}>Sign in to your SurveyFlow account</p>
+          <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Admin Login</h1>
+          <p style={{ color: "var(--text-secondary)", fontSize: 14 }}>Sign in to manage your surveys</p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -77,7 +76,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@example.com"
+              placeholder="admin@surveyflow.com"
               className="input"
               required
             />
@@ -100,28 +99,33 @@ export default function LoginPage() {
           {error && (
             <div
               style={{
-                padding: "10px 14px",
-                background: "rgba(239,68,68,0.1)",
-                border: "1px solid rgba(239,68,68,0.3)",
+                padding: "10px 12px",
+                background: "var(--status-error-bg)",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
                 borderRadius: 8,
-                color: "var(--error)",
+                color: "var(--status-error)",
                 fontSize: 13,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
             >
+              <AlertCircle size={16} />
               {error}
             </div>
           )}
 
-          <button id="login-btn" type="submit" className="btn-primary" disabled={loading} style={{ marginTop: 8, justifyContent: "center", padding: "13px" }}>
+          <button id="login-btn" type="submit" className="btn-primary" disabled={loading} style={{ marginTop: 6, justifyContent: "center", padding: "11px" }}>
+            <LogIn size={16} />
             {loading ? "Signing in…" : "Sign In"}
           </button>
         </form>
 
-        <p style={{ textAlign: "center", marginTop: 20, fontSize: 13, color: "var(--text-secondary)" }}>
+        <p style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: "var(--text-secondary)" }}>
           Don&apos;t have an account?{" "}
-          <a href="/admin/register" style={{ color: "var(--accent-light)", textDecoration: "none", fontWeight: 500 }}>
-            Register
-          </a>
+          <Link href="/admin/register" style={{ color: "var(--accent-light)", textDecoration: "none", fontWeight: 500 }}>
+            Create one
+          </Link>
         </p>
       </div>
     </div>

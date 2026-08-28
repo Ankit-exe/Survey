@@ -1,5 +1,7 @@
 "use client";
 
+import { Plus, X } from "lucide-react";
+
 interface OptionsEditorProps {
   options: string[];
   onChange: (options: string[]) => void;
@@ -13,61 +15,55 @@ export default function OptionsEditor({ options, onChange }: OptionsEditorProps)
 
   return (
     <div style={{ marginBottom: 12 }}>
-      <div style={{ fontSize: 12, fontWeight: 500, color: "var(--text-muted)", marginBottom: 8 }}>
+      <div style={{ fontSize: 11, fontWeight: 600, color: "var(--text-muted)", letterSpacing: "0.05em", marginBottom: 8 }}>
         OPTIONS
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {options.map((opt, idx) => (
           <div key={idx} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <div style={{ width: 20, height: 20, borderRadius: 4, border: "1.5px solid var(--border)", flexShrink: 0 }} />
+            <div style={{ width: 16, height: 16, borderRadius: 4, border: "1.5px solid var(--border-medium)", flexShrink: 0 }} />
             <input
               type="text"
               value={opt}
               onChange={(e) => updateOption(idx, e.target.value)}
               placeholder={`Option ${idx + 1}`}
               className="input"
-              style={{ fontSize: 13, padding: "6px 10px" }}
+              style={{ fontSize: 13, padding: "5px 10px" }}
             />
-            <button
-              onClick={() => removeOption(idx)}
-              style={{
-                background: "none",
-                border: "none",
-                color: "var(--text-muted)",
-                cursor: "pointer",
-                padding: 4,
-                flexShrink: 0,
-              }}
-            >
-              <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </button>
+            {options.length > 1 && (
+              <button
+                onClick={() => removeOption(idx)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "var(--text-muted)",
+                  cursor: "pointer",
+                  padding: 4,
+                  display: "flex",
+                  alignItems: "center",
+                  flexShrink: 0,
+                  borderRadius: 4,
+                }}
+                title="Remove option"
+              >
+                <X size={14} />
+              </button>
+            )}
           </div>
         ))}
         <button
           onClick={addOption}
+          className="btn-ghost"
           style={{
-            background: "none",
-            border: "1px dashed var(--border)",
-            color: "var(--text-muted)",
-            cursor: "pointer",
-            padding: "6px 12px",
-            borderRadius: 8,
-            fontSize: 13,
-            textAlign: "left",
-            transition: "border-color 0.2s, color 0.2s",
-          }}
-          onMouseOver={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--accent)";
-            (e.currentTarget as HTMLButtonElement).style.color = "var(--accent-light)";
-          }}
-          onMouseOut={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border)";
-            (e.currentTarget as HTMLButtonElement).style.color = "var(--text-muted)";
+            marginTop: 2,
+            padding: "5px 8px",
+            fontSize: 12,
+            color: "var(--accent-light)",
+            alignSelf: "flex-start",
           }}
         >
-          + Add Option
+          <Plus size={14} />
+          Add Option
         </button>
       </div>
     </div>

@@ -11,16 +11,7 @@ export const metadata: Metadata = { title: "Analytics" };
 export default async function AnalyticsPage({ params }: Props) {
   const { id } = await params;
   const session = await auth();
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
-  const res = await fetch(`${baseUrl}/api/responses/${id}/analytics`, {
-    cache: "no-store",
-    headers: {
-      Cookie: `next-auth.session-token=${session?.user ? "valid" : ""}`,
-    },
-  });
-
-  // Fetch analytics server-side via Prisma directly for better auth handling
   const { prisma } = await import("@/lib/prisma");
   const { average } = await import("@/lib/utils");
 

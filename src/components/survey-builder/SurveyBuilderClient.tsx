@@ -20,6 +20,14 @@ import {
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import type { Question, ConditionalRule } from "@/lib/validations";
 import SortableQuestionCard from "./SortableQuestionCard";
+import {
+  Save,
+  Check,
+  ExternalLink,
+  Plus,
+  AlertCircle,
+  FileEdit,
+} from "lucide-react";
 
 type QuestionType = "TEXT" | "MULTIPLE_CHOICE" | "CHECKBOX" | "RATING";
 
@@ -161,61 +169,83 @@ export default function SurveyBuilderClient({ initialSurvey }: SurveyBuilderClie
   const surveySlug = initialSurvey?.slug;
 
   return (
-    <div className="animate-fade-in-up" style={{ maxWidth: 800, margin: "0 auto" }}>
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28, flexWrap: "wrap", gap: 12 }}>
-        <div>
-          <h1 style={{ fontSize: 28, fontWeight: 800 }}>
-            {initialSurvey ? "Edit Survey" : "New Survey"}
+    <div className="animate-fade-in" style={{ maxWidth: 840, margin: "0 auto" }}>
+      {/* Top Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28, flexWrap: "wrap", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <h1 style={{ fontSize: 26, fontWeight: 700 }}>
+            {initialSurvey ? "Edit Survey" : "Create New Survey"}
           </h1>
           {initialSurvey && (
-            <span className="badge badge-purple" style={{ marginTop: 4 }}>v{initialSurvey.version}</span>
+            <span className="badge badge-indigo">v{initialSurvey.version}</span>
           )}
         </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+
+        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
           {surveySlug && isPublished && (
-            <a href={`/s/${surveySlug}`} target="_blank" rel="noreferrer" className="btn-secondary" style={{ fontSize: 13 }}>
-              Preview ↗
+            <a href={`/s/${surveySlug}`} target="_blank" rel="noreferrer" className="btn-secondary" style={{ fontSize: 13, padding: "8px 12px" }}>
+              <ExternalLink size={15} />
+              Preview Public Form
             </a>
           )}
-          <label className="toggle" title={isPublished ? "Published" : "Draft"}>
-            <input
-              type="checkbox"
-              checked={isPublished}
-              onChange={(e) => setIsPublished(e.target.checked)}
-            />
-            <span className="toggle-slider" />
-          </label>
-          <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>
-            {isPublished ? "Published" : "Draft"}
-          </span>
+          
+          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 10px", borderRadius: 8, background: "var(--bg-card)", border: "1px solid var(--border-subtle)" }}>
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={isPublished}
+                onChange={(e) => setIsPublished(e.target.checked)}
+              />
+              <span className="toggle-slider" />
+            </label>
+            <span style={{ fontSize: 13, fontWeight: 500, color: isPublished ? "var(--status-success)" : "var(--text-muted)" }}>
+              {isPublished ? "Published" : "Draft"}
+            </span>
+          </div>
+
           <button id="save-survey-btn" onClick={handleSave} className="btn-primary" disabled={saving}>
-            {saving ? "Saving…" : saved ? "✓ Saved" : "Save Survey"}
+            {saving ? (
+              "Saving…"
+            ) : saved ? (
+              <>
+                <Check size={16} />
+                Saved
+              </>
+            ) : (
+              <>
+                <Save size={16} />
+                Save Survey
+              </>
+            )}
           </button>
         </div>
       </div>
 
       {error && (
-        <div style={{ padding: "10px 14px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 8, color: "var(--error)", fontSize: 13, marginBottom: 20 }}>
+        <div style={{ padding: "12px 14px", background: "var(--status-error-bg)", border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: 8, color: "var(--status-error)", fontSize: 13, marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
+          <AlertCircle size={16} />
           {error}
         </div>
       )}
 
-      {/* Survey Meta */}
-      <div className="glass-card" style={{ padding: 24, marginBottom: 24 }}>
-        <h2 style={{ fontSize: 15, fontWeight: 600, marginBottom: 16, color: "var(--text-secondary)" }}>Survey Details</h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+      {/* Survey Meta Details */}
+      <div className="human-card" style={{ padding: 24, marginBottom: 28 }}>
+        <h2 style={{ fontSize: 14, fontWeight: 600, marginBottom: 16, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          General Information
+        </h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
             <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 6, color: "var(--text-secondary)" }}>
-              Title <span style={{ color: "var(--error)" }}>*</span>
+              Survey Title <span style={{ color: "var(--status-error)" }}>*</span>
             </label>
             <input
               id="survey-title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter survey title…"
+              placeholder="e.g., Customer Feedback Survey 2026"
               className="input"
+              style={{ fontSize: 15, fontWeight: 500 }}
             />
           </div>
           <div>
@@ -226,7 +256,7 @@ export default function SurveyBuilderClient({ initialSurvey }: SurveyBuilderClie
               id="survey-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Optional description for respondents…"
+              placeholder="Provide context or instructions for participants…"
               className="input"
               rows={3}
             />
@@ -234,14 +264,19 @@ export default function SurveyBuilderClient({ initialSurvey }: SurveyBuilderClie
         </div>
       </div>
 
-      {/* Questions */}
+      {/* Questions Section Header */}
       <div style={{ marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 style={{ fontSize: 18, fontWeight: 700 }}>Questions ({questions.length})</h2>
-        <button id="add-question-btn" onClick={addQuestion} className="btn-secondary" style={{ fontSize: 13 }}>
-          + Add Question
+        <div>
+          <h2 style={{ fontSize: 18, fontWeight: 600 }}>Questions</h2>
+          <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Drag and drop to reorder questions</p>
+        </div>
+        <button id="add-question-btn" onClick={addQuestion} className="btn-secondary" style={{ fontSize: 13, padding: "7px 12px" }}>
+          <Plus size={15} />
+          Add Question
         </button>
       </div>
 
+      {/* Drag & Drop Context */}
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -249,7 +284,7 @@ export default function SurveyBuilderClient({ initialSurvey }: SurveyBuilderClie
         modifiers={[restrictToVerticalAxis]}
       >
         <SortableContext items={questions.map((q) => q._key)} strategy={verticalListSortingStrategy}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {questions.map((q) => (
               <SortableQuestionCard
                 key={q._key}
@@ -263,41 +298,37 @@ export default function SurveyBuilderClient({ initialSurvey }: SurveyBuilderClie
         </SortableContext>
       </DndContext>
 
-      {questions.length === 0 && (
-        <div
-          className="glass-card"
-          style={{ padding: 40, textAlign: "center", cursor: "pointer" }}
-          onClick={addQuestion}
-        >
-          <div style={{ fontSize: 36, marginBottom: 12 }}>➕</div>
-          <p style={{ color: "var(--text-secondary)" }}>Click to add your first question</p>
-        </div>
-      )}
-
+      {/* Add Question Button Strip */}
       <button
         onClick={addQuestion}
         style={{
           width: "100%",
-          marginTop: 12,
-          padding: 14,
-          border: "2px dashed var(--border)",
-          borderRadius: 12,
-          background: "transparent",
-          color: "var(--text-muted)",
+          marginTop: 16,
+          padding: "14px",
+          border: "1px dashed var(--border-medium)",
+          borderRadius: 10,
+          background: "var(--bg-card)",
+          color: "var(--text-secondary)",
           cursor: "pointer",
           fontSize: 14,
-          transition: "border-color 0.2s, color 0.2s",
+          fontWeight: 500,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          transition: "all 0.15s ease",
         }}
         onMouseOver={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--accent)";
-          (e.currentTarget as HTMLButtonElement).style.color = "var(--accent-light)";
+          (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border-focus)";
+          (e.currentTarget as HTMLButtonElement).style.color = "var(--text-main)";
         }}
         onMouseOut={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border)";
-          (e.currentTarget as HTMLButtonElement).style.color = "var(--text-muted)";
+          (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border-medium)";
+          (e.currentTarget as HTMLButtonElement).style.color = "var(--text-secondary)";
         }}
       >
-        + Add Question
+        <Plus size={16} />
+        Add Question
       </button>
 
       <div style={{ height: 60 }} />

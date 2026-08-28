@@ -5,12 +5,13 @@ import { CSS } from "@dnd-kit/utilities";
 import type { Question, ConditionalRule } from "@/lib/validations";
 import ConditionalLogicEditor from "./ConditionalLogicEditor";
 import OptionsEditor from "./OptionsEditor";
+import { GripVertical, Trash2 } from "lucide-react";
 
 const QUESTION_TYPES = [
-  { value: "TEXT", label: "📝 Text Input" },
-  { value: "MULTIPLE_CHOICE", label: "🔘 Multiple Choice" },
-  { value: "CHECKBOX", label: "☑️ Checkbox" },
-  { value: "RATING", label: "⭐ Rating (1–5)" },
+  { value: "TEXT", label: "Text Input" },
+  { value: "MULTIPLE_CHOICE", label: "Multiple Choice" },
+  { value: "CHECKBOX", label: "Checkbox (Multi-select)" },
+  { value: "RATING", label: "Rating (1–5)" },
 ];
 
 interface Props {
@@ -28,7 +29,7 @@ export default function SortableQuestionCard({ question, allQuestions, onUpdate,
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.6 : 1,
+    opacity: isDragging ? 0.5 : 1,
     zIndex: isDragging ? 10 : 1,
   };
 
@@ -38,12 +39,12 @@ export default function SortableQuestionCard({ question, allQuestions, onUpdate,
     <div
       ref={setNodeRef}
       style={style}
-      className="glass-card"
+      className="human-card"
     >
       <div style={{ padding: "18px 20px" }}>
-        {/* Question Header */}
+        {/* Question Control Row */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-          {/* Drag handle */}
+          {/* Drag Handle */}
           <div
             {...attributes}
             {...listeners}
@@ -51,20 +52,21 @@ export default function SortableQuestionCard({ question, allQuestions, onUpdate,
               cursor: isDragging ? "grabbing" : "grab",
               color: "var(--text-muted)",
               flexShrink: 0,
-              padding: 4,
+              padding: "4px 2px",
+              display: "flex",
+              alignItems: "center",
               touchAction: "none",
             }}
+            title="Drag to reorder"
           >
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-              <path d="M9 5h.01M9 12h.01M9 19h.01M15 5h.01M15 12h.01M15 19h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
+            <GripVertical size={16} />
           </div>
 
-          <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600, flexShrink: 0 }}>
+          <span style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 600, minWidth: 24, flexShrink: 0 }}>
             Q{question.order + 1}
           </span>
 
-          {/* Type selector */}
+          {/* Question Type Selector */}
           <select
             value={question.type}
             onChange={(e) => {
@@ -75,49 +77,50 @@ export default function SortableQuestionCard({ question, allQuestions, onUpdate,
               });
             }}
             className="input select"
-            style={{ maxWidth: 200, padding: "6px 12px", fontSize: 13 }}
+            style={{ maxWidth: 200, padding: "6px 10px", fontSize: 13 }}
           >
             {QUESTION_TYPES.map((t) => (
               <option key={t.value} value={t.value}>{t.label}</option>
             ))}
           </select>
 
-          {/* Required toggle */}
-          <label className="toggle tooltip" data-tip="Required" style={{ marginLeft: "auto", flexShrink: 0 }}>
-            <input
-              type="checkbox"
-              checked={question.required}
-              onChange={(e) => onUpdate({ required: e.target.checked })}
-            />
-            <span className="toggle-slider" />
-          </label>
-          <span style={{ fontSize: 12, color: "var(--text-muted)", flexShrink: 0 }}>Required</span>
+          {/* Required Toggle */}
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+            <label className="toggle">
+              <input
+                type="checkbox"
+                checked={question.required}
+                onChange={(e) => onUpdate({ required: e.target.checked })}
+              />
+              <span className="toggle-slider" />
+            </label>
+            <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>Required</span>
+          </div>
 
-          {/* Remove */}
+          {/* Remove Button */}
           <button
             onClick={onRemove}
             className="btn-danger"
-            style={{ padding: "6px 10px", flexShrink: 0 }}
-            title="Remove question"
+            style={{ padding: "6px 8px", flexShrink: 0 }}
+            title="Delete question"
           >
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
-              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
+            <Trash2 size={15} />
           </button>
         </div>
 
-        {/* Label */}
+        {/* Question Title Input */}
         <div style={{ marginBottom: 12 }}>
           <input
             type="text"
             value={question.label}
             onChange={(e) => onUpdate({ label: e.target.value })}
-            placeholder="Enter question text…"
+            placeholder="Type your question here…"
             className="input"
+            style={{ fontSize: 14, fontWeight: 500 }}
           />
         </div>
 
-        {/* Options editor for MC/Checkbox */}
+        {/* Options Editor */}
         {typeNeedsOptions && (
           <OptionsEditor
             options={(question.options as string[]) ?? []}
@@ -125,7 +128,7 @@ export default function SortableQuestionCard({ question, allQuestions, onUpdate,
           />
         )}
 
-        {/* Conditional logic */}
+        {/* Conditional Logic Editor */}
         {allQuestions.length > 1 && (
           <ConditionalLogicEditor
             conditions={(question.conditions as ConditionalRule[]) ?? []}

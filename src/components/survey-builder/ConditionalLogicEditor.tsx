@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { ConditionalRule, Question } from "@/lib/validations";
+import { GitBranch, ChevronRight, Plus, X } from "lucide-react";
 
 interface ConditionalLogicEditorProps {
   conditions: ConditionalRule[];
@@ -47,7 +48,7 @@ export default function ConditionalLogicEditor({
   if (precedingQuestions.length === 0) return null;
 
   return (
-    <div style={{ marginTop: 12, borderTop: "1px solid var(--border)", paddingTop: 12 }}>
+    <div style={{ marginTop: 14, borderTop: "1px solid var(--border-subtle)", paddingTop: 12 }}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{
@@ -63,27 +64,23 @@ export default function ConditionalLogicEditor({
           padding: 0,
         }}
       >
-        <svg
-          width="12"
-          height="12"
-          fill="none"
-          viewBox="0 0 24 24"
-          style={{ transform: isOpen ? "rotate(90deg)" : "none", transition: "transform 0.15s" }}
-        >
-          <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
-        Conditional Logic
+        <ChevronRight
+          size={14}
+          style={{ transform: isOpen ? "rotate(90deg)" : "none", transition: "transform 0.15s ease" }}
+        />
+        <GitBranch size={14} />
+        Conditional Display Rules
         {conditions.length > 0 && (
-          <span className="badge badge-purple" style={{ fontSize: 10, padding: "1px 6px" }}>
-            {conditions.length} rule{conditions.length > 1 ? "s" : ""}
+          <span className="badge badge-indigo" style={{ fontSize: 10, padding: "1px 6px" }}>
+            {conditions.length} active rule{conditions.length > 1 ? "s" : ""}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-          <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 4 }}>
-            Show this question only if:
+        <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 8 }}>
+          <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 2 }}>
+            Display this question only when:
           </p>
 
           {conditions.map((condition, idx) => {
@@ -101,21 +98,21 @@ export default function ConditionalLogicEditor({
                   gap: 8,
                   alignItems: "center",
                   flexWrap: "wrap",
-                  background: "rgba(139,92,246,0.06)",
-                  border: "1px solid rgba(139,92,246,0.15)",
+                  background: "var(--bg-surface)",
+                  border: "1px solid var(--border-subtle)",
                   borderRadius: 8,
-                  padding: "8px 12px",
+                  padding: "8px 10px",
                 }}
               >
                 <select
                   value={condition.dependsOnId}
                   onChange={(e) => updateCondition(idx, { dependsOnId: e.target.value, value: "" })}
                   className="input select"
-                  style={{ fontSize: 12, padding: "4px 8px", maxWidth: 180 }}
+                  style={{ fontSize: 12, padding: "4px 8px", maxWidth: 170 }}
                 >
                   {precedingQuestions.map((q) => (
                     <option key={q._key} value={q._key}>
-                      Q{q.order + 1}: {q.label.slice(0, 30) || "Untitled"}
+                      Q{q.order + 1}: {q.label.slice(0, 25) || "Untitled Question"}
                     </option>
                   ))}
                 </select>
@@ -124,10 +121,10 @@ export default function ConditionalLogicEditor({
                   value={condition.operator}
                   onChange={(e) => updateCondition(idx, { operator: e.target.value as ConditionalRule["operator"] })}
                   className="input select"
-                  style={{ fontSize: 12, padding: "4px 8px", maxWidth: 130 }}
+                  style={{ fontSize: 12, padding: "4px 8px", maxWidth: 120 }}
                 >
                   <option value="equals">equals</option>
-                  <option value="not_equals">not equals</option>
+                  <option value="not_equals">is not equal to</option>
                   <option value="contains">contains</option>
                 </select>
 
@@ -136,9 +133,9 @@ export default function ConditionalLogicEditor({
                     value={condition.value}
                     onChange={(e) => updateCondition(idx, { value: e.target.value })}
                     className="input select"
-                    style={{ fontSize: 12, padding: "4px 8px", maxWidth: 160 }}
+                    style={{ fontSize: 12, padding: "4px 8px", maxWidth: 150 }}
                   >
-                    <option value="">-- select --</option>
+                    <option value="">-- select option --</option>
                     {depOptions.map((opt) => (
                       <option key={opt} value={opt}>{opt}</option>
                     ))}
@@ -148,16 +145,18 @@ export default function ConditionalLogicEditor({
                     type="text"
                     value={condition.value}
                     onChange={(e) => updateCondition(idx, { value: e.target.value })}
-                    placeholder="value"
+                    placeholder="matching value"
                     className="input"
-                    style={{ fontSize: 12, padding: "4px 8px", maxWidth: 150 }}
+                    style={{ fontSize: 12, padding: "4px 8px", maxWidth: 140 }}
                   />
                 )}
 
-                <button onClick={() => removeCondition(idx)} style={{ background: "none", border: "none", color: "var(--error)", cursor: "pointer", padding: 2 }}>
-                  <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
-                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
+                <button
+                  onClick={() => removeCondition(idx)}
+                  style={{ background: "none", border: "none", color: "var(--status-error)", cursor: "pointer", padding: 2, display: "flex", alignItems: "center" }}
+                  title="Remove rule"
+                >
+                  <X size={14} />
                 </button>
               </div>
             );
@@ -165,18 +164,16 @@ export default function ConditionalLogicEditor({
 
           <button
             onClick={addCondition}
+            className="btn-ghost"
             style={{
-              background: "none",
-              border: "1px dashed rgba(139,92,246,0.3)",
-              color: "var(--accent-light)",
-              cursor: "pointer",
-              padding: "5px 10px",
-              borderRadius: 6,
+              padding: "4px 8px",
               fontSize: 12,
-              textAlign: "left",
+              color: "var(--accent-light)",
+              alignSelf: "flex-start",
             }}
           >
-            + Add Condition
+            <Plus size={13} />
+            Add Logic Rule
           </button>
         </div>
       )}

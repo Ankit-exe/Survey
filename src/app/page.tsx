@@ -1,4 +1,13 @@
 import Link from "next/link";
+import {
+  FormInput,
+  GitMerge,
+  BarChart3,
+  ShieldCheck,
+  ArrowRight,
+  LayoutDashboard,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -9,74 +18,105 @@ export default function HomePage() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "40px 24px",
-        background: "radial-gradient(ellipse at top, rgba(139,92,246,0.15) 0%, transparent 60%), var(--bg-primary)",
+        padding: "60px 24px",
+        background: "radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.07) 0%, transparent 50%), var(--bg-main)",
         textAlign: "center",
       }}
     >
-      {/* Logo */}
-      <div style={{ marginBottom: "24px" }}>
-        <div
+      {/* Top Tagline */}
+      <div
+        className="badge badge-indigo"
+        style={{ marginBottom: 20, padding: "6px 14px", fontSize: 13, gap: 6 }}
+      >
+        <CheckCircle2 size={14} /> Modern Survey & Feedback Platform
+      </div>
+
+      {/* Main Hero Header */}
+      <div style={{ maxWidth: 640, marginBottom: 32 }}>
+        <h1
           style={{
-            width: 64,
-            height: 64,
-            background: "var(--gradient-primary)",
-            borderRadius: 18,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto 16px",
-            boxShadow: "0 0 40px var(--accent-glow)",
+            fontSize: "clamp(36px, 5vw, 52px)",
+            fontWeight: 700,
+            lineHeight: 1.15,
+            marginBottom: 16,
+            color: "var(--text-main)",
           }}
         >
-          <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-            <rect x="9" y="3" width="6" height="4" rx="1" stroke="white" strokeWidth="2"/>
-            <path d="M9 12h6M9 16h4" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        </div>
-        <h1 className="gradient-text" style={{ fontSize: 48, fontWeight: 800, marginBottom: 8 }}>
-          SurveyFlow
+          Dynamic surveys built for real insights
         </h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: 18, maxWidth: 480 }}>
-          Build beautiful surveys with conditional logic, multiple question types, and real-time analytics.
+        <p style={{ color: "var(--text-secondary)", fontSize: 18, lineHeight: 1.6 }}>
+          Create dynamic questionnaires with conditional branching logic, validate user responses in real time, and analyze detailed feedback seamlessly.
         </p>
       </div>
 
       {/* CTA Buttons */}
-      <div style={{ display: "flex", gap: 12, marginTop: 32, flexWrap: "wrap", justifyContent: "center" }}>
-        <Link href="/admin" className="btn-primary" style={{ fontSize: 16, padding: "12px 28px" }}>
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          Admin Panel
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+        <Link href="/admin" className="btn-primary" style={{ fontSize: 15, padding: "12px 24px" }}>
+          <LayoutDashboard size={18} />
+          Go to Admin Panel
         </Link>
-        <Link href="/admin/register" className="btn-secondary" style={{ fontSize: 16, padding: "12px 28px" }}>
-          Get Started
+        <Link href="/admin/register" className="btn-secondary" style={{ fontSize: 15, padding: "12px 24px" }}>
+          Create Account
+          <ArrowRight size={16} />
         </Link>
       </div>
 
-      {/* Features */}
+      {/* Feature Grid */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: 16,
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: 20,
           marginTop: 64,
-          maxWidth: 900,
+          maxWidth: 960,
           width: "100%",
         }}
       >
         {[
-          { icon: "🎯", title: "4 Question Types", desc: "Text, Multiple Choice, Checkbox, Rating" },
-          { icon: "⚡", title: "Conditional Logic", desc: "Show questions based on previous answers" },
-          { icon: "📊", title: "Analytics Dashboard", desc: "Charts, averages, and response trends" },
-          { icon: "🔒", title: "Secure by Default", desc: "JWT auth, rate limiting, IP hashing" },
+          {
+            icon: <FormInput size={22} color="var(--accent-light)" />,
+            title: "4 Question Types",
+            desc: "Collect responses with Text fields, Single Choice, Multi-select Checkboxes, and 1–5 Ratings.",
+          },
+          {
+            icon: <GitMerge size={22} color="var(--accent-light)" />,
+            title: "Conditional Logic",
+            desc: "Dynamically display or hide subsequent questions based on previous answers.",
+          },
+          {
+            icon: <BarChart3 size={22} color="var(--accent-light)" />,
+            title: "Real-time Analytics",
+            desc: "Visualize response distribution with interactive bar charts, average scores, and raw entries.",
+          },
+          {
+            icon: <ShieldCheck size={22} color="var(--accent-light)" />,
+            title: "Built-in Security",
+            desc: "JWT-based admin session authentication, server-side Zod validation, and rate limiting.",
+          },
         ].map((feature) => (
-          <div key={feature.title} className="glass-card" style={{ padding: 24, textAlign: "left" }}>
-            <div style={{ fontSize: 28, marginBottom: 12 }}>{feature.icon}</div>
-            <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>{feature.title}</h3>
-            <p style={{ color: "var(--text-secondary)", fontSize: 13 }}>{feature.desc}</p>
+          <div
+            key={feature.title}
+            className="human-card"
+            style={{ padding: 24, textAlign: "left", display: "flex", flexDirection: "column", gap: 12 }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 8,
+                background: "var(--bg-muted)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid var(--border-subtle)",
+              }}
+            >
+              {feature.icon}
+            </div>
+            <div>
+              <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>{feature.title}</h3>
+              <p style={{ color: "var(--text-secondary)", fontSize: 14, lineHeight: 1.5 }}>{feature.desc}</p>
+            </div>
           </div>
         ))}
       </div>

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import type { ConditionalRule } from "@/lib/validations";
+import { CheckCircle2, Star, AlertCircle, Send, FileText } from "lucide-react";
 
 interface Question {
   id: string;
@@ -34,7 +35,6 @@ function evaluateConditions(
   if (!conditions || conditions.length === 0) return true;
 
   return conditions.every((cond) => {
-    // Find the question this condition depends on (by id or _key)
     const depQ = allQuestions.find((q) => q.id === cond.dependsOnId);
     if (!depQ) return true;
     const answer = answers[depQ.id];
@@ -56,7 +56,6 @@ export default function SurveyFormClient({ survey }: SurveyFormClientProps) {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  // Compute visible questions based on conditional logic
   const visibleQuestions = useMemo(() => {
     return survey.questions.filter((q) =>
       evaluateConditions(q.conditions, answers, survey.questions)
@@ -104,7 +103,6 @@ export default function SurveyFormClient({ survey }: SurveyFormClientProps) {
     setSubmitting(true);
     setSubmitError("");
 
-    // Only include visible questions' answers
     const filteredAnswers: Record<string, AnswerValue> = {};
     for (const q of visibleQuestions) {
       if (answers[q.id] !== undefined) {
@@ -136,28 +134,32 @@ export default function SurveyFormClient({ survey }: SurveyFormClientProps) {
           alignItems: "center",
           justifyContent: "center",
           padding: 24,
-          background: "radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, transparent 60%), var(--bg-primary)",
+          background: "radial-gradient(circle at 50% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 60%), var(--bg-main)",
         }}
       >
-        <div className="glass-card animate-fade-in-up" style={{ padding: 48, textAlign: "center", maxWidth: 480 }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>🎉</div>
-          <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8 }}>Thank you!</h2>
-          <p style={{ color: "var(--text-secondary)", fontSize: 16 }}>
-            Your response has been submitted successfully.
-          </p>
+        <div className="human-card animate-fade-in" style={{ padding: "48px 36px", textAlign: "center", maxWidth: 440, width: "100%" }}>
           <div
             style={{
-              marginTop: 20,
-              padding: "8px 16px",
-              background: "rgba(16,185,129,0.1)",
-              border: "1px solid rgba(16,185,129,0.3)",
-              borderRadius: 8,
-              color: "var(--success)",
-              fontSize: 14,
-              display: "inline-block",
+              width: 56,
+              height: 56,
+              borderRadius: "50%",
+              background: "var(--status-success-bg)",
+              color: "var(--status-success)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 20px",
+              border: "1px solid rgba(16, 185, 129, 0.3)",
             }}
           >
-            ✓ Response recorded
+            <CheckCircle2 size={32} />
+          </div>
+          <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Thank You!</h2>
+          <p style={{ color: "var(--text-secondary)", fontSize: 15, lineHeight: 1.5, marginBottom: 24 }}>
+            Your response has been submitted successfully.
+          </p>
+          <div className="badge badge-success" style={{ fontSize: 13, padding: "6px 14px" }}>
+            Response recorded
           </div>
         </div>
       </div>
@@ -168,11 +170,11 @@ export default function SurveyFormClient({ survey }: SurveyFormClientProps) {
     <div
       style={{
         minHeight: "100vh",
-        background: "radial-gradient(ellipse at top, rgba(139,92,246,0.1) 0%, transparent 50%), var(--bg-primary)",
-        padding: "40px 24px 80px",
+        background: "radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.05) 0%, transparent 50%), var(--bg-main)",
+        padding: "40px 20px 80px",
       }}
     >
-      {/* Progress bar */}
+      {/* Top Fixed Progress Bar */}
       <div
         style={{
           position: "fixed",
@@ -181,56 +183,55 @@ export default function SurveyFormClient({ survey }: SurveyFormClientProps) {
           right: 0,
           zIndex: 100,
           height: 3,
-          background: "var(--bg-secondary)",
+          background: "var(--bg-muted)",
         }}
       >
         <div
           style={{
             height: "100%",
             width: `${progress}%`,
-            background: "var(--gradient-primary)",
-            transition: "width 0.4s ease",
+            background: "var(--accent-primary)",
+            transition: "width 0.3s ease",
           }}
         />
       </div>
 
-      <div style={{ maxWidth: 680, margin: "0 auto" }}>
-        {/* Survey header */}
-        <div className="glass-card animate-fade-in-up" style={{ padding: 32, marginBottom: 28 }}>
+      <div style={{ maxWidth: 640, margin: "0 auto" }}>
+        {/* Survey Header */}
+        <div className="human-card animate-fade-in" style={{ padding: 32, marginBottom: 24 }}>
           <div
             style={{
-              width: 44,
-              height: 44,
-              background: "var(--gradient-primary)",
-              borderRadius: 12,
+              width: 40,
+              height: 40,
+              background: "var(--accent-subtle)",
+              borderRadius: 8,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              color: "var(--accent-light)",
               marginBottom: 16,
+              border: "1px solid rgba(99, 102, 241, 0.2)",
             }}
           >
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
-              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-              <rect x="9" y="3" width="6" height="4" rx="1" stroke="white" strokeWidth="2"/>
-            </svg>
+            <FileText size={20} />
           </div>
-          <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8 }}>{survey.title}</h1>
+          <h1 style={{ fontSize: 26, fontWeight: 700, marginBottom: 8 }}>{survey.title}</h1>
           {survey.description && (
             <p style={{ color: "var(--text-secondary)", fontSize: 15, lineHeight: 1.6 }}>
               {survey.description}
             </p>
           )}
-          <div style={{ marginTop: 16, display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ marginTop: 20, display: "flex", alignItems: "center", gap: 12 }}>
             <div className="progress-bar" style={{ flex: 1 }}>
               <div className="progress-fill" style={{ width: `${progress}%` }} />
             </div>
             <span style={{ fontSize: 12, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
-              {progress}% complete
+              {progress}% completed
             </span>
           </div>
         </div>
 
-        {/* Questions */}
+        {/* Questions Form */}
         <form onSubmit={handleSubmit}>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {visibleQuestions.map((question, idx) => (
@@ -249,14 +250,18 @@ export default function SurveyFormClient({ survey }: SurveyFormClientProps) {
             <div
               style={{
                 marginTop: 20,
-                padding: "12px 16px",
-                background: "rgba(239,68,68,0.1)",
-                border: "1px solid rgba(239,68,68,0.3)",
-                borderRadius: 10,
-                color: "var(--error)",
-                fontSize: 14,
+                padding: "12px 14px",
+                background: "var(--status-error-bg)",
+                border: "1px solid rgba(239, 68, 68, 0.3)",
+                borderRadius: 8,
+                color: "var(--status-error)",
+                fontSize: 13,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
             >
+              <AlertCircle size={16} />
               {submitError}
             </div>
           )}
@@ -266,8 +271,9 @@ export default function SurveyFormClient({ survey }: SurveyFormClientProps) {
             type="submit"
             disabled={submitting}
             className="btn-primary"
-            style={{ marginTop: 28, fontSize: 16, padding: "14px 32px", width: "100%", justifyContent: "center" }}
+            style={{ marginTop: 28, fontSize: 15, padding: "12px 24px", width: "100%", justifyContent: "center" }}
           >
+            <Send size={16} />
             {submitting ? "Submitting…" : "Submit Response"}
           </button>
         </form>
@@ -287,20 +293,22 @@ interface QuestionFieldProps {
 }
 
 function QuestionField({ question, index, value, error, onChange }: QuestionFieldProps) {
+  const [hoverRating, setHoverRating] = useState<number | null>(null);
+
   return (
     <div
-      className="glass-card animate-fade-in-up"
-      style={{ padding: "22px 24px", animationDelay: `${index * 50}ms` }}
+      className="human-card animate-fade-in"
+      style={{ padding: "22px 24px" }}
     >
       <div style={{ marginBottom: 14 }}>
-        <span style={{ fontSize: 12, color: "var(--text-muted)", fontWeight: 600 }}>
+        <span style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 600 }}>
           {index + 1}.
         </span>
-        <span style={{ fontSize: 16, fontWeight: 600, marginLeft: 6 }}>
+        <span style={{ fontSize: 15, fontWeight: 600, marginLeft: 8, color: "var(--text-main)" }}>
           {question.label}
         </span>
         {question.required && (
-          <span style={{ color: "var(--error)", marginLeft: 4 }}>*</span>
+          <span style={{ color: "var(--status-error)", marginLeft: 4 }}>*</span>
         )}
       </div>
 
@@ -308,7 +316,7 @@ function QuestionField({ question, index, value, error, onChange }: QuestionFiel
         <textarea
           value={(value as string) ?? ""}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Your answer…"
+          placeholder="Type your response here…"
           className="input"
           rows={3}
         />
@@ -316,32 +324,35 @@ function QuestionField({ question, index, value, error, onChange }: QuestionFiel
 
       {question.type === "MULTIPLE_CHOICE" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {(question.options ?? []).map((opt) => (
-            <label
-              key={opt}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                padding: "10px 14px",
-                borderRadius: 10,
-                border: `1.5px solid ${value === opt ? "var(--accent)" : "var(--border)"}`,
-                cursor: "pointer",
-                background: value === opt ? "rgba(139,92,246,0.08)" : "transparent",
-                transition: "all 0.15s",
-              }}
-            >
-              <input
-                type="radio"
-                name={`q-${question.id}`}
-                value={opt}
-                checked={value === opt}
-                onChange={() => onChange(opt)}
-                style={{ accentColor: "var(--accent)" }}
-              />
-              <span style={{ fontSize: 14 }}>{opt}</span>
-            </label>
-          ))}
+          {(question.options ?? []).map((opt) => {
+            const isSelected = value === opt;
+            return (
+              <label
+                key={opt}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  padding: "10px 14px",
+                  borderRadius: 8,
+                  border: `1px solid ${isSelected ? "var(--border-focus)" : "var(--border-subtle)"}`,
+                  cursor: "pointer",
+                  background: isSelected ? "var(--accent-subtle)" : "var(--bg-surface)",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                <input
+                  type="radio"
+                  name={`q-${question.id}`}
+                  value={opt}
+                  checked={isSelected}
+                  onChange={() => onChange(opt)}
+                  style={{ accentColor: "var(--accent-primary)" }}
+                />
+                <span style={{ fontSize: 14, color: "var(--text-main)" }}>{opt}</span>
+              </label>
+            );
+          })}
         </div>
       )}
 
@@ -357,11 +368,11 @@ function QuestionField({ question, index, value, error, onChange }: QuestionFiel
                   alignItems: "center",
                   gap: 10,
                   padding: "10px 14px",
-                  borderRadius: 10,
-                  border: `1.5px solid ${checked ? "var(--accent)" : "var(--border)"}`,
+                  borderRadius: 8,
+                  border: `1px solid ${checked ? "var(--border-focus)" : "var(--border-subtle)"}`,
                   cursor: "pointer",
-                  background: checked ? "rgba(139,92,246,0.08)" : "transparent",
-                  transition: "all 0.15s",
+                  background: checked ? "var(--accent-subtle)" : "var(--bg-surface)",
+                  transition: "all 0.15s ease",
                 }}
               >
                 <input
@@ -376,9 +387,9 @@ function QuestionField({ question, index, value, error, onChange }: QuestionFiel
                       onChange(current.filter((v) => v !== opt));
                     }
                   }}
-                  style={{ accentColor: "var(--accent)" }}
+                  style={{ accentColor: "var(--accent-primary)" }}
                 />
-                <span style={{ fontSize: 14 }}>{opt}</span>
+                <span style={{ fontSize: 14, color: "var(--text-main)" }}>{opt}</span>
               </label>
             );
           })}
@@ -386,20 +397,31 @@ function QuestionField({ question, index, value, error, onChange }: QuestionFiel
       )}
 
       {question.type === "RATING" && (
-        <div style={{ display: "flex", gap: 8 }}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              className="star-btn"
-              onClick={() => onChange(star)}
-              style={{ fontSize: 32 }}
-            >
-              {Number(value) >= star ? "⭐" : "☆"}
-            </button>
-          ))}
-          {value && (
-            <span style={{ marginLeft: 8, alignSelf: "center", color: "var(--text-secondary)", fontSize: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {[1, 2, 3, 4, 5].map((star) => {
+            const activeStar = (hoverRating ?? Number(value ?? 0)) >= star;
+            return (
+              <button
+                key={star}
+                type="button"
+                onClick={() => onChange(star)}
+                onMouseEnter={() => setHoverRating(star)}
+                onMouseLeave={() => setHoverRating(null)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 4,
+                  color: activeStar ? "#f59e0b" : "var(--border-medium)",
+                  transition: "transform 0.1s ease, color 0.15s ease",
+                }}
+              >
+                <Star size={28} fill={activeStar ? "#f59e0b" : "none"} />
+              </button>
+            );
+          })}
+          {value !== undefined && (
+            <span style={{ marginLeft: 12, color: "var(--text-secondary)", fontSize: 14, fontWeight: 500 }}>
               {value} / 5
             </span>
           )}
@@ -407,8 +429,9 @@ function QuestionField({ question, index, value, error, onChange }: QuestionFiel
       )}
 
       {error && (
-        <div style={{ marginTop: 8, color: "var(--error)", fontSize: 13 }}>
-          ⚠ {error}
+        <div style={{ marginTop: 10, color: "var(--status-error)", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+          <AlertCircle size={14} />
+          {error}
         </div>
       )}
     </div>
