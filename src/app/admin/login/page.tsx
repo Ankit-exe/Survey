@@ -28,12 +28,18 @@ export default function LoginPage() {
       if (res?.error) {
         setLoading(false);
         setError("Invalid email or password");
+        return;
+      }
+
+      window.location.href = "/admin";
+    } catch (err: unknown) {
+      const errStr = String(err);
+      if (errStr.includes("CredentialsSignin") || errStr.includes("Credentials") || errStr.includes("CallbackRouteError")) {
+        setLoading(false);
+        setError("Invalid email or password");
       } else {
         window.location.href = "/admin";
       }
-    } catch {
-      setLoading(false);
-      setError("An unexpected error occurred");
     }
   }
 
