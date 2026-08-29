@@ -18,18 +18,22 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const res = await signIn("credentials", {
+        email: email.trim(),
+        password,
+        redirect: false,
+      });
 
-    setLoading(false);
-    if (res?.error) {
-      setError("Invalid email or password");
-    } else {
-      router.push("/admin");
-      router.refresh();
+      if (res?.error) {
+        setLoading(false);
+        setError("Invalid email or password");
+      } else {
+        window.location.href = "/admin";
+      }
+    } catch {
+      setLoading(false);
+      setError("An unexpected error occurred");
     }
   }
 
@@ -120,13 +124,6 @@ export default function LoginPage() {
             {loading ? "Signing in…" : "Sign In"}
           </button>
         </form>
-
-        <p style={{ textAlign: "center", marginTop: 24, fontSize: 13, color: "var(--text-secondary)" }}>
-          Don&apos;t have an account?{" "}
-          <Link href="/admin/register" style={{ color: "var(--accent-light)", textDecoration: "none", fontWeight: 500 }}>
-            Create one
-          </Link>
-        </p>
       </div>
     </div>
   );

@@ -68,20 +68,12 @@ export default function HomePage() {
         }}
       >
         <Link
-          href="/admin"
+          href="/admin/login"
           className="btn-primary"
           style={{ fontSize: 15, padding: "12px 24px" }}
         >
           <LayoutDashboard size={18} />
-          Go to Admin Panel
-        </Link>
-        <Link
-          href="/admin/register"
-          className="btn-secondary"
-          style={{ fontSize: 15, padding: "12px 24px" }}
-        >
-          Create Account
-          <ArrowRight size={16} />
+          Admin Login
         </Link>
       </div>
     </main>
