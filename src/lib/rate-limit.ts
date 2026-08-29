@@ -1,6 +1,3 @@
-// Simple in-memory rate limiter for response submissions
-// For production, replace with Redis/Upstash
-
 interface RateLimitRecord {
   count: number;
   resetAt: number;
