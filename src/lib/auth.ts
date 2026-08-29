@@ -5,11 +5,22 @@ import bcrypt from "bcryptjs";
 import { LoginSchema } from "@/lib/validations";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   session: { strategy: "jwt" },
   pages: {
     signIn: "/admin/login",
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return url;
+      try {
+        if (new URL(url).origin === new URL(baseUrl).origin) return url;
+      } catch {
+        // Fallback if invalid URL
+      }
+      return "/admin/login";
+    },
+
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;

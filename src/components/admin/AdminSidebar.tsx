@@ -148,7 +148,10 @@ export default function AdminSidebar({ user }: AdminSidebarProps) {
           </div>
         </div>
         <button
-          onClick={() => signOut({ callbackUrl: "/admin/login" })}
+          onClick={() => {
+            const callbackUrl = typeof window !== "undefined" ? `${window.location.origin}/admin/login` : "/admin/login";
+            signOut({ callbackUrl });
+          }}
           className="btn-secondary"
           style={{ width: "100%", justifyContent: "center", fontSize: 13, padding: "8px 12px" }}
         >
