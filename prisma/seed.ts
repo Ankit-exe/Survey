@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Seeding database...");
 
   // Create admin user
   const hashedPassword = await bcrypt.hash("admin123", 12);
@@ -19,7 +18,7 @@ async function main() {
     },
   });
 
-  console.log(`✅ Admin user: ${admin.email} (password: admin123)`);
+  console.log(`Admin user: ${admin.email} (password: admin123)`);
 
   // Create a sample survey
   const survey = await prisma.survey.create({
@@ -65,7 +64,7 @@ async function main() {
             required: false,
             conditions: [
               {
-                dependsOnId: "__PLACEHOLDER__", // Will be updated after creation
+                dependsOnId: "__PLACEHOLDER__",
                 operator: "not_equals",
                 value: "Yes, definitely",
               },
@@ -95,8 +94,6 @@ async function main() {
     });
   }
 
-  console.log(`✅ Sample survey: "${survey.title}" (slug: ${survey.slug})`);
-  console.log(`   → Public URL: /s/${survey.slug}`);
 
   // Add some sample responses
   const questions = survey.questions.sort((a, b) => a.order - b.order);
@@ -118,13 +115,13 @@ async function main() {
     });
   }
 
-  console.log(`✅ Created ${sampleAnswers.length} sample responses`);
-  console.log("\n🎉 Seed complete! You can now run: npm run dev");
+  console.log(`Created ${sampleAnswers.length} sample responses`);
+  console.log("\n Seed complete! You can now run: npm run dev");
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Seed failed:", e);
+    console.error("Seed failed:", e);
     process.exit(1);
   })
   .finally(async () => {
